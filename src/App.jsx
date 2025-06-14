@@ -99,9 +99,7 @@ export default function App() {
           </button>
         </form>
         <div style={{ marginTop: 12, fontSize: 12, color: "#aaa" }}>
-          只允许以下账号登录：<br />
-          zyq / woyaoyizhiaiysh<br />
-          ysh / woyaoyizhiaizyq
+        宝宝  
         </div>
         {error && <div style={{ color: "#f66", marginTop: 8 }}>{error}</div>}
       </div>
@@ -112,11 +110,11 @@ export default function App() {
   return (
     <div style={{ maxWidth: 520, margin: "40px auto", background: "#222", borderRadius: 16, padding: 24, color: "#fff" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2>Love Diary</h2>
-        <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#ff6fa9", cursor: "pointer" }}>退出</button>
+        <h2>宝宝日记  Diary</h2>
+        <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#6fffd1", cursor: "pointer" }}>退出</button>
       </div>
       <div style={{ marginBottom: 18, fontSize: 15, color: "#ccc" }}>
-        你好，{loggedUser}！每天记录值得感激和美好的小事吧～
+        你好，{loggedUser}宝宝！今天有什么开心的事呀？
       </div>
       <form onSubmit={handleSend} style={{ display: "flex", gap: 8, marginBottom: 20 }}>
         <input
@@ -129,7 +127,7 @@ export default function App() {
       </form>
       <div>
         {messages.length === 0 ? (
-          <div style={{ color: "#aaa", textAlign: "center" }}>还没有留言，快来记录第一条吧！</div>
+          <div style={{ color: "#aaa", textAlign: "center" }}>来当第一！</div>
         ) : (
           messages.map((msg, i) => (
             <div key={msg.id || i} style={{ background: "#333", borderRadius: 8, marginBottom: 12, padding: 12 }}>
