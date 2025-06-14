@@ -228,7 +228,7 @@ export default function App() {
         ) : (
           messages.map((msg, i) => (
             <div key={msg.id || i} style={{ background: "#333", borderRadius: 8, marginBottom: 12, padding: 12 }}>
-              <div style={{ fontWeight: "bold", color: msg.author === loggedUser ? "#6fffd1" : "#6fc1ff" }}>
+              <div style={{ fontWeight: "bold", color: msg.author === loggedUser ? "#fc6faf" : "#6fffd1" }}>
                 {msg.author}
                 <span style={{ fontWeight: "normal", color: "#aaa", fontSize: 12, marginLeft: 8 }}>
                   {/* 自动转为本地时区友好显示 */}
@@ -250,7 +250,7 @@ export default function App() {
               <div style={{ marginTop: 6, fontSize: 16 }}>{msg.content}</div>
               {msg.image_url && (
                 <img
-                  src={`${API_BASE.replace('/api', '')}${msg.image_url}`}
+                  src={msg.image_url}
                   alt="留言图片"
                   style={{ maxWidth: "100%", maxHeight: 300, marginTop: 8, borderRadius: 4 }}
                 />
