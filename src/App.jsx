@@ -76,7 +76,7 @@ export default function App() {
   if (!loggedUser) {
     return (
       <div style={{ maxWidth: 340, margin: "60px auto", padding: 20, background: "#222", borderRadius: 12, color: "#fff" }}>
-        <h2 style={{ textAlign: "center" }}>Love Diary 登录</h2>
+        <h2 style={{ textAlign: "center" }}>宝宝日记 Diary 登录</h2>
         <form onSubmit={handleLogin}>
           <input
             name="username"
@@ -94,12 +94,12 @@ export default function App() {
             value={inputPwd}
             onChange={e => setInputPwd(e.target.value)}
           />
-          <button type="submit" style={{ width: "100%", padding: 10, borderRadius: 4, background: "#ff6fa9", color: "#fff", fontWeight: "bold" }}>
+          <button type="submit" style={{ width: "100%", padding: 10, borderRadius: 4, background: "#6fffd1", color: "#fff", fontWeight: "bold" }}>
             登录
           </button>
         </form>
         <div style={{ marginTop: 12, fontSize: 12, color: "#aaa" }}>
-        宝宝  
+        宝宝今天也爱你 0613  
         </div>
         {error && <div style={{ color: "#f66", marginTop: 8 }}>{error}</div>}
       </div>
@@ -123,7 +123,7 @@ export default function App() {
           placeholder="写下今天的美好瞬间..."
           style={{ flex: 1, padding: 10, borderRadius: 8 }}
         />
-        <button type="submit" style={{ padding: "10px 20px", borderRadius: 8, background: "#ff6fa9", color: "#fff", fontWeight: "bold" }}>发送</button>
+        <button type="submit" style={{ padding: "10px 20px", borderRadius: 8, background: "#6fffd1", color: "#fff", fontWeight: "bold" }}>发送</button>
       </form>
       <div>
         {messages.length === 0 ? (
@@ -131,7 +131,7 @@ export default function App() {
         ) : (
           messages.map((msg, i) => (
             <div key={msg.id || i} style={{ background: "#333", borderRadius: 8, marginBottom: 12, padding: 12 }}>
-              <div style={{ fontWeight: "bold", color: msg.author === loggedUser ? "#ff6fa9" : "#6fc1ff" }}>
+              <div style={{ fontWeight: "bold", color: msg.author === loggedUser ? "#6fffd1" : "#6fc1ff" }}>
                 {msg.author}
                 <span style={{ fontWeight: "normal", color: "#aaa", fontSize: 12, marginLeft: 8 }}>
                   {msg.time}
