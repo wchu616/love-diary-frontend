@@ -19,11 +19,11 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  // 拉取留言
+  // 拉取全部留言
   useEffect(() => {
     fetch(`${API_BASE}/messages`)
       .then(res => res.json())
-      .then(data => setMessages(data.reverse()))
+      .then(data => setMessages(data))
       .catch(() => setMessages([]));
   }, []);
 
@@ -106,7 +106,7 @@ export default function App() {
         // 留言成功后刷新
         return fetch(`${API_BASE}/messages`)
           .then(res => res.json())
-          .then(data => setMessages(data.reverse()));
+          .then(data => setMessages(data));
       })
       .then(() => {
         setContent("");
