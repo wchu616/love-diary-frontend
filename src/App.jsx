@@ -158,26 +158,6 @@ const [sortOrder, setSortOrder] = useState("desc");
       <div style={{ marginBottom: 18, fontSize: 15, color: "#ccc" }}>
         你好，{loggedUser}宝宝！今天有什么开心的事呀？
       </div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ marginRight: 8 }}>排序方式：</label>
-        <select
-          value={sortBy}
-          onChange={e => setSortBy(e.target.value)}
-          style={{ padding: 6, borderRadius: 4 }}
-        >
-          <option value="author">按用户排序</option>
-          <option value="time">按时间字段排序</option>
-        </select>
-
-        <select
-          value={sortOrder}
-          onChange={e => setSortOrder(e.target.value)}
-          style={{ padding: 6, borderRadius: 4, marginLeft: 8 }}
-        >
-          <option value="desc">降序</option>
-          <option value="asc">升序</option>
-        </select>
-      </div>
 
       <form onSubmit={handleSend} style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
         <input
@@ -222,6 +202,27 @@ const [sortOrder, setSortOrder] = useState("desc");
             发送
           </button>
         </div>
+        <div style={{ marginTop: 8 }}></div>
+        <div style={{ marginBottom: 2 }}>
+        <label style={{ marginRight: 6, fontSize: 12, color: "#ccc" }}>排序方式：</label>
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value)}
+          style={{ padding: 5, borderRadius: 5 }}
+        >
+          <option value="id">按时间排序</option>
+          <option value="author">按用户排序</option>
+        </select>
+
+        <select
+          value={sortOrder}
+          onChange={e => setSortOrder(e.target.value)}
+          style={{ padding: 5, borderRadius: 5, marginLeft: 6 }}
+        >
+          <option value="desc">降序</option>
+          <option value="asc">升序</option>
+        </select>
+      </div>
         {imagePreview && (
           <div style={{ position: "relative", marginTop: 8 }}>
             <img
