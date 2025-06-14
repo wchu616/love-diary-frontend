@@ -118,7 +118,7 @@ export default function App() {
           <input
             name="username"
             placeholder="用户名"
-            style={{ width: "100%", marginBottom: 8, padding: 8, borderRadius: 4 }}
+            style={{ width: "95%", marginBottom: 8, padding: 8, borderRadius: 4 }}
             autoFocus
             value={inputUser}
             onChange={e => setInputUser(e.target.value)}
@@ -127,7 +127,7 @@ export default function App() {
             name="password"
             type="password"
             placeholder="密码"
-            style={{ width: "100%", marginBottom: 8, padding: 8, borderRadius: 4 }}
+            style={{ width: "95%", marginBottom: 8, padding: 8, borderRadius: 4 }}
             value={inputPwd}
             onChange={e => setInputPwd(e.target.value)}
           />
