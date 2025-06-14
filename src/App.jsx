@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-// 后端 API 基础地址
+// 后端 API 地址
 const API_BASE = "https://zero613yshzyq.onrender.com/api";
 
 // 允许登录的用户列表
@@ -10,8 +10,11 @@ const ALLOWED_USERS = [
 ];
 
 export default function App() {
-  const [user, setUser] = useState(""); // 当前登录用户
-  const [password, setPassword] = useState(""); // 登录密码
+  // 登录表单状态
+  const [inputUser, setInputUser] = useState(""); // 输入框用户名
+  const [inputPwd, setInputPwd] = useState("");   // 输入框密码
+  const [loggedUser, setLoggedUser] = useState(""); // 已登录用户名
+
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
@@ -26,30 +29,26 @@ export default function App() {
       .catch(() => setMessages([]));
   }, []);
 
-  // 处理图片选择
+  // 图片选择与预览
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedImage(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
+      reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
-
-  // 清除已选图片
   const clearImage = () => {
     setSelectedImage(null);
     setImagePreview(null);
   };
 
-  // 登录
+  // 登录处理
   function handleLogin(e) {
     e.preventDefault();
     const matched = ALLOWED_USERS.find(
-      (u) => u.username === user && u.password === password
+      (u) => u.username === inputUser && u.password === inputPwd
     );
     if (!matched) {
       setError("用户名或密码错误");
@@ -58,7 +57,7 @@ export default function App() {
     fetch(`${API_BASE}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: user, password }),
+      body: JSON.stringify({ username: inputUser, password: inputPwd }),
     })
       .then(res => {
         if (!res.ok) throw new Error("用户名或密码错误");
@@ -67,14 +66,14 @@ export default function App() {
       })
       .then(data => {
         if (data.success) {
-          setUser(user);
+          setLoggedUser(inputUser);
         } else {
           throw new Error("登录失败");
         }
       })
       .catch(err => {
         setError(err.message);
-        setUser(""); // 登录失败时清空用户状态
+        setLoggedUser("");
       });
   }
 
@@ -84,11 +83,9 @@ export default function App() {
     if (!content.trim() && !selectedImage) return;
 
     const formData = new FormData();
-    formData.append('author', user);
+    formData.append('author', loggedUser);
     formData.append('content', content.trim());
-    if (selectedImage) {
-      formData.append('image', selectedImage);
-    }
+    if (selectedImage) formData.append('image', selectedImage);
 
     fetch(`${API_BASE}/messages`, {
       method: "POST",
@@ -96,8 +93,7 @@ export default function App() {
     })
       .then(res => res.json())
       .then(() => {
-        // 留言成功后刷新
-        return fetch(`${API_BASE}/messages`)
+        fetch(`${API_BASE}/messages`)
           .then(res => res.json())
           .then(data => setMessages(data));
       })
@@ -108,12 +104,13 @@ export default function App() {
   }
 
   function handleLogout() {
-    setUser("");
-    setPassword("");
+    setLoggedUser("");
+    setInputUser("");
+    setInputPwd("");
   }
 
-  // 未登录页
-  if (!user) {
+  // 未登录界面
+  if (!loggedUser) {
     return (
       <div style={{ maxWidth: 340, margin: "60px auto", padding: 20, background: "#222", borderRadius: 12, color: "#fff" }}>
         <h2 style={{ textAlign: "center" }}>宝宝日记 Diary 登录</h2>
@@ -123,38 +120,38 @@ export default function App() {
             placeholder="用户名"
             style={{ width: "100%", marginBottom: 8, padding: 8, borderRadius: 4 }}
             autoFocus
-            value={user}
-            onChange={e => setUser(e.target.value)}
+            value={inputUser}
+            onChange={e => setInputUser(e.target.value)}
           />
           <input
             name="password"
             type="password"
             placeholder="密码"
             style={{ width: "100%", marginBottom: 8, padding: 8, borderRadius: 4 }}
-            value={password}
-            onChange={e => setPassword(e.target.value)}
+            value={inputPwd}
+            onChange={e => setInputPwd(e.target.value)}
           />
           <button type="submit" style={{ width: "100%", padding: 10, borderRadius: 4, background: "#6fffd1", color: "#fff", fontWeight: "bold" }}>
             登录
           </button>
         </form>
         <div style={{ marginTop: 12, fontSize: 12, color: "#aaa" }}>
-          宝宝今天也爱你 0613  
+          宝宝今天也爱你 0613
         </div>
         {error && <div style={{ color: "#f66", marginTop: 8 }}>{error}</div>}
       </div>
     );
   }
 
-  // 已登录留言板页
+  // 已登录留言板界面
   return (
     <div style={{ maxWidth: 520, margin: "40px auto", background: "#222", borderRadius: 16, padding: 24, color: "#fff" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2>宝宝日记  Diary</h2>
+        <h2>宝宝日记 Diary</h2>
         <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#6fffd1", cursor: "pointer" }}>退出</button>
       </div>
       <div style={{ marginBottom: 18, fontSize: 15, color: "#ccc" }}>
-        你好，{user}宝宝！今天有什么开心的事呀？
+        你好，{loggedUser}宝宝！今天有什么开心的事呀？
       </div>
       <form onSubmit={handleSend} style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
         <input
@@ -231,10 +228,20 @@ export default function App() {
         ) : (
           messages.map((msg, i) => (
             <div key={msg.id || i} style={{ background: "#333", borderRadius: 8, marginBottom: 12, padding: 12 }}>
-              <div style={{ fontWeight: "bold", color: msg.author === user ? "#6fffd1" : "#6fc1ff" }}>
+              <div style={{ fontWeight: "bold", color: msg.author === loggedUser ? "#6fffd1" : "#6fc1ff" }}>
                 {msg.author}
                 <span style={{ fontWeight: "normal", color: "#aaa", fontSize: 12, marginLeft: 8 }}>
-                  {msg.time}
+                  {/* 自动转为本地时区友好显示 */}
+                  {msg.time &&
+                    new Date(msg.time).toLocaleString("zh-CN", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })
+                  }
                   {msg.region && (
                     <span> | {msg.region}</span>
                   )}
