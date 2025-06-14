@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 
-// 允许的账号信息（可按需更改）
-const USERS = [
-  { username: "zyq", password: "woyaoyizhiaiysh" },
-  { username: "ysh", password: "woyaoyizhiaizyq" },
-];
-
-// Render 云端 API 地址
+// 后端 API 基础地址
 const API_BASE = "https://zero613yshzyq.onrender.com/api";
 
+// 允许登录的用户列表
+const ALLOWED_USERS = [
+  { username: "zyq", password: "woyaoyizhiaiysh" },
+  { username: "ysh", password: "woyaoyizhiaizyq" }
+];
+
 export default function App() {
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState(""); // 当前登录用户
+  const [password, setPassword] = useState(""); // 登录密码
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
-  const [mode, setMode] = useState("login");
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -49,6 +48,13 @@ export default function App() {
   // 登录
   function handleLogin(e) {
     e.preventDefault();
+    const matched = ALLOWED_USERS.find(
+      (u) => u.username === user && u.password === password
+    );
+    if (!matched) {
+      setError("用户名或密码错误");
+      return;
+    }
     fetch(`${API_BASE}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -61,26 +67,6 @@ export default function App() {
       })
       .then(() => {
         setUser(user);
-      })
-      .catch(err => setError(err.message));
-  }
-
-  // 注册
-  function handleRegister(e) {
-    e.preventDefault();
-    fetch(`${API_BASE}/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: user, password }),
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("注册失败，用户名可能已存在");
-        setError("");
-        return res.json();
-      })
-      .then(() => {
-        alert("注册成功，请登录！");
-        setMode("login");
       })
       .catch(err => setError(err.message));
   }
@@ -119,12 +105,12 @@ export default function App() {
     setPassword("");
   }
 
-  // 未登录
+  // 未登录页
   if (!user) {
     return (
       <div style={{ maxWidth: 340, margin: "60px auto", padding: 20, background: "#222", borderRadius: 12, color: "#fff" }}>
-        <h2 style={{ textAlign: "center" }}>Love Diary {mode === "login" ? "登录" : "注册"}</h2>
-        <form onSubmit={mode === "login" ? handleLogin : handleRegister}>
+        <h2 style={{ textAlign: "center" }}>宝宝日记 Diary 登录</h2>
+        <form onSubmit={handleLogin}>
           <input
             name="username"
             placeholder="用户名"
@@ -141,31 +127,27 @@ export default function App() {
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
-          <button type="submit" style={{ width: "100%", padding: 10, borderRadius: 4, background: "#ff6fa9", color: "#fff", fontWeight: "bold" }}>
-            {mode === "login" ? "登录" : "注册"}
+          <button type="submit" style={{ width: "100%", padding: 10, borderRadius: 4, background: "#6fffd1", color: "#fff", fontWeight: "bold" }}>
+            登录
           </button>
         </form>
-        <div style={{ marginTop: 10 }}>
-          {mode === "login" ? (
-            <span style={{ color: "#6fc1ff", cursor: "pointer" }} onClick={() => { setMode("register"); setError(""); }}>没有账号？点这里注册</span>
-          ) : (
-            <span style={{ color: "#6fc1ff", cursor: "pointer" }} onClick={() => { setMode("login"); setError(""); }}>已有账号？点这里登录</span>
-          )}
+        <div style={{ marginTop: 12, fontSize: 12, color: "#aaa" }}>
+          宝宝今天也爱你 0613  
         </div>
         {error && <div style={{ color: "#f66", marginTop: 8 }}>{error}</div>}
       </div>
     );
   }
 
-  // 已登录留言板
+  // 已登录留言板页
   return (
     <div style={{ maxWidth: 520, margin: "40px auto", background: "#222", borderRadius: 16, padding: 24, color: "#fff" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2>Love Diary</h2>
-        <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#ff6fa9", cursor: "pointer" }}>退出</button>
+        <h2>宝宝日记  Diary</h2>
+        <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#6fffd1", cursor: "pointer" }}>退出</button>
       </div>
       <div style={{ marginBottom: 18, fontSize: 15, color: "#ccc" }}>
-        你好，{user}！每天记录值得感激和美好的小事吧～
+        你好，{user}宝宝！今天有什么开心的事呀？
       </div>
       <form onSubmit={handleSend} style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
         <input
@@ -201,7 +183,7 @@ export default function App() {
             style={{
               padding: "10px 20px",
               borderRadius: 8,
-              background: "#ff6fa9",
+              background: "#6fffd1",
               color: "#fff",
               fontWeight: "bold",
               flex: 1
@@ -238,12 +220,18 @@ export default function App() {
       </form>
       <div>
         {messages.length === 0 ? (
-          <div style={{ color: "#aaa", textAlign: "center" }}>还没有留言，快来记录第一条吧！</div>
+          <div style={{ color: "#aaa", textAlign: "center" }}>来当第一！</div>
         ) : (
           messages.map((msg, i) => (
             <div key={msg.id || i} style={{ background: "#333", borderRadius: 8, marginBottom: 12, padding: 12 }}>
-              <div style={{ fontWeight: "bold", color: msg.author === user ? "#ff6fa9" : "#6fc1ff" }}>
-                {msg.author} <span style={{ fontWeight: "normal", color: "#aaa", fontSize: 12, marginLeft: 8 }}>{msg.time}</span>
+              <div style={{ fontWeight: "bold", color: msg.author === user ? "#6fffd1" : "#6fc1ff" }}>
+                {msg.author}
+                <span style={{ fontWeight: "normal", color: "#aaa", fontSize: 12, marginLeft: 8 }}>
+                  {msg.time}
+                  {msg.region && (
+                    <span> | {msg.region}</span>
+                  )}
+                </span>
               </div>
               <div style={{ marginTop: 6, fontSize: 16 }}>{msg.content}</div>
               {msg.image_url && (
