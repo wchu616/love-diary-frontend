@@ -65,10 +65,17 @@ export default function App() {
         setError("");
         return res.json();
       })
-      .then(() => {
-        setUser(user);
+      .then(data => {
+        if (data.success) {
+          setUser(user);
+        } else {
+          throw new Error("登录失败");
+        }
       })
-      .catch(err => setError(err.message));
+      .catch(err => {
+        setError(err.message);
+        setUser(""); // 登录失败时清空用户状态
+      });
   }
 
   // 发送留言
