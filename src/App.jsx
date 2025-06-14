@@ -20,14 +20,21 @@ export default function App() {
   const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [sortBy, setSortBy] = useState("id");
+const [sortOrder, setSortOrder] = useState("desc");
+
 
   // 拉取全部留言
-  useEffect(() => {
-    fetch(`${API_BASE}/messages`)
+  const fetchMessages = (sortByVal = sortBy, sortOrderVal = sortOrder) => {
+    fetch(`${API_BASE}/messages?sortBy=${sortByVal}&sortOrder=${sortOrderVal}`)
       .then(res => res.json())
       .then(data => setMessages(data))
       .catch(() => setMessages([]));
-  }, []);
+  };
+  useEffect(() => {
+    fetchMessages();
+  }, [sortBy, sortOrder]);
+  
 
   // 图片选择与预览
   const handleImageSelect = (e) => {
@@ -93,10 +100,8 @@ export default function App() {
     })
       .then(res => res.json())
       .then(() => {
-        fetch(`${API_BASE}/messages`)
-          .then(res => res.json())
-          .then(data => setMessages(data));
-      })
+        fetchMessages();
+      })      
       .then(() => {
         setContent("");
         clearImage();
@@ -153,6 +158,27 @@ export default function App() {
       <div style={{ marginBottom: 18, fontSize: 15, color: "#ccc" }}>
         你好，{loggedUser}宝宝！今天有什么开心的事呀？
       </div>
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ marginRight: 8 }}>排序方式：</label>
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value)}
+          style={{ padding: 6, borderRadius: 4 }}
+        >
+          <option value="author">按用户排序</option>
+          <option value="time">按时间字段排序</option>
+        </select>
+
+        <select
+          value={sortOrder}
+          onChange={e => setSortOrder(e.target.value)}
+          style={{ padding: 6, borderRadius: 4, marginLeft: 8 }}
+        >
+          <option value="desc">降序</option>
+          <option value="asc">升序</option>
+        </select>
+      </div>
+
       <form onSubmit={handleSend} style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
         <input
           value={content}
