@@ -1,7 +1,28 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: '宝宝日记',
+        short_name: '宝宝日记',
+        description: '只属于我们俩的专属情侣日记本',
+        theme_color: '#6fffd1',
+        background_color: '#222',
+        display: 'standalone',
+        start_url: '.',
+        icons: [
+          {
+            src: '/icon.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      }
+    })
+  ]
 })
